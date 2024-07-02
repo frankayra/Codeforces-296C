@@ -4,18 +4,18 @@ import sys
 def SpTa(array):
     n = len(array)
     st = [0] * n
-    LOG_MAX = int(math.log2(n-1)) + 1
-    for k in range(n):
-        st[k] = [0] * LOG_MAX
-    gcd_counter = [0] * max(array)
-    for j in range(LOG_MAX):
+    LOG_MAX = int(math.log2(n-1)) + 2
+    gcd_counter = [0] * (max(array)+1)
+    for i in range(n):
+        st[i] = [0] * (LOG_MAX)
+        st[i][0] = array[i]
+        gcd_counter[array[i]]+=1
+    for j in range(1, LOG_MAX):
         for i in range(n):
-            if i + 2**j - 1 >= n:
+            # st[n-1][j] = array[n-1]
+            if i + 2**(j)-1  >= n:
                 break
-            if j == 0:
-                st[i][j] = array[i]
-                continue
-            curr_gcd = math.gcd(st[i][j-1], st[i + 2**(j)-1][j-1])
+            curr_gcd = math.gcd(st[i][j-1], st[i + 2**(j-1)][j-1])
             st[i][j] = curr_gcd
             gcd_counter[curr_gcd]+=1
 
@@ -23,8 +23,10 @@ def SpTa(array):
         log = int(math.log2(r-l+1))
         return math.gcd(st[l][log], st[r-2**log+1][log])
     
-    return st, get
+    return st, get, gcd_counter
 
-st, get = SpTa([2, 2, 3, 4, 5, 6])
-print(st)
+st, get, gcd_counter = SpTa([2, 6, 3])
+print(f"st: {st}")
+print([f"{i}({gcd_counter[i]})"for i in range(len(gcd_counter))])
 # print(math.gcd(1, 2))
+print(get(0, 2))
