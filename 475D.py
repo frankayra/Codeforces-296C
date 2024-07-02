@@ -31,7 +31,7 @@ def SparseTable(array):
         def BinSearch(num, l, r, interval_beg, sign_factor):
             m = 0
             while(l < r):
-                m = (r-l)//2
+                m = (r-l)//2                    # Problema con el caso en el que l=1, r=3, m siempre sera 1 si array[1]>num, l se sigue asignando como 1 infinitamente
                 if (l-r)%2!=0: 
                     m -= 1
                 if sign_factor == -1:
