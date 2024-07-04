@@ -5,25 +5,18 @@ def SparseTable(array):
     n = len(array)
     st = [0] * n
     LOG_MAX = int(math.log2(n-1)) + 2
-    # gcd_counter = [0] * (max(array)+1)
     for i in range(n):
         st[i] = [0] * (LOG_MAX)
         st[i][0] = array[i]
-        # gcd_counter[array[i]]+=1
     for j in range(1, LOG_MAX):
         for i in range(n):
             if i + 2**(j)-1  >= n:
                 break
             curr_gcd = math.gcd(st[i][j-1], st[i + 2**(j-1)][j-1])
             st[i][j] = curr_gcd
-            # gcd_counter[curr_gcd]+=1
-    # gcd_counter = [0] * (max(array)+1)
-        
     
     def get(l, r):
         log = int(math.log2(r-l+1))
-        # if log != int(math.log(r-l+2)):
-        #     return st[l][log]
         return math.gcd(st[l][log], st[r-2**log+1][log])
 
 
@@ -51,17 +44,25 @@ def SparseTable(array):
             if l==r and get(begin, r)==num: last_index_found=r
             return last_index_found
 
-        result = 0
+        # result = 0
+        # for l in range(n):
+        #     forward_limit = BinSearch(fixed_gcd, l, 1)
+        #     if forward_limit == -1:
+        #         continue
+        #     backward_limit = BinSearch(fixed_gcd, l, -1)
+        #     result += forward_limit - backward_limit + 1
+        # return result
+        gcd_counter = [0] * (max(array)+1)
         for l in range(n):
-            forward_limit = BinSearch(fixed_gcd, l, 1)
-            if forward_limit == -1:
-                continue
-            backward_limit = BinSearch(fixed_gcd, l, -1)
-            result += forward_limit - backward_limit + 1
-        return result
+            curr_gcd = get(0, l)
+        gcd_counter[curr_gcd]+=1
+        gcd_counter[array[i]]+=1
+
+        return gcd_counter
 
     return st, get, get_gcd_count
         
+
 # st, get = SparseTable([1, 2, 3, 4, 5, 6])
 # print(st)
 # print(math.gcd(1, 2))
