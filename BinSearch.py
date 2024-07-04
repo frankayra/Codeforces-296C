@@ -1,29 +1,24 @@
 def BinSearch(num, begin, sign_factor, get, n):
             l, r = begin, n-1
-            m, last_index_found = l+(r-l)//2, -1
+            last_index_found = -1
             
             while(l < r):
+                m=(l+r)//2
                 beg_to_m_gcd = get(begin, m)
                 if beg_to_m_gcd == num:
                     last_index_found = m
                     
                 if sign_factor == -1:
-                    if beg_to_m_gcd <= num: 
-                        r = m
-                        m = l+(r-l)//2
-                    else: 
-                        l = m
-                        m = l+(r-l+1)//2
+                    if beg_to_m_gcd <= num:
+                        r = m-1
+                    else:
+                        l = m+1
                 elif sign_factor == 1:
-                    if beg_to_m_gcd >= num: 
-                        l = m
-                        m = l+(r-l+1)//2                    # Favorece el caso de acercar el limite izquierdo hacia la derecha
-                    else: 
-                        r = m
-                        m = l+(r-l)//2                      # Viceversa
-
-
-            print(f"last_index_found: {last_index_found}")
+                    if beg_to_m_gcd >= num:
+                        l = m+1
+                    else:
+                        r = m-1
+            if l==r and get(begin, r)==num: last_index_found=r
             return last_index_found
 
 def main():

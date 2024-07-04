@@ -22,52 +22,43 @@ def SparseTable(array):
     
     def get(l, r):
         log = int(math.log2(r-l+1))
-        if log != int(math.log(r-l+2)):
-            return st[l][log]
+        # if log != int(math.log(r-l+2)):
+        #     return st[l][log]
         return math.gcd(st[l][log], st[r-2**log+1][log])
 
 
     def get_gcd_count(fixed_gcd):
-        def BinSearch(num, l, r, interval_beg, sign_factor):
-            m = 0
+        def BinSearch(num, begin, sign_factor):
+            l, r = begin, n-1
+            last_index_found = -1
+            m=0
             while(l < r):
-                m = (r-l)//2                    # Problema con el caso en el que l=1, r=3, m siempre sera 1 si array[1]>num, l se sigue asignando como 1 infinitamente
-                if (l-r)%2!=0: 
-                    m -= 1
+                m=(l+r)//2
+                beg_to_m_gcd = get(begin, m)
+                if beg_to_m_gcd == num:
+                    last_index_found = m
+                    
                 if sign_factor == -1:
-                    if get(interval_beg, m) <= num: r = m
-                    else:                   l = m
+                    if beg_to_m_gcd <= num:
+                        r = m-1
+                    else:
+                        l = m+1
                 elif sign_factor == 1:
-                    if get(interval_beg, m) >= num: l = m
-                    else:                   r = m
-            return l
+                    if beg_to_m_gcd >= num:
+                        l = m+1
+                    else:
+                        r = m-1
+            if l==r and get(begin, r)==num: last_index_found=r
+            return last_index_found
+
         result = 0
         for l in range(n):
-            r = l
-            min_index = l
-            max_index = l
-            power = 0
-            while(r < n):                       # Contemplar el caso en el que no haya coincidencia con ese especifico gcd.
-                curr_gcd = get(l, r)
-                if curr_gcd > fixed_gcd:
-                    min_index = r
-                    max_index = r
-                elif curr_gcd == fixed_gcd:
-                    max_index = min(r + 2**power, n)
-                else:
-                    if min_index == max_index:
-                        return 0
-                    break
-                
-                r = l+2**power
-                power+=1
-            result += BinSearch(fixed_gcd, min_index, max_index, l, sign_factor=1) - BinSearch(fixed_gcd, right=max_index, left=min_index, sign_factor=-1)
-
+            forward_limit = BinSearch(fixed_gcd, l, 1)
+            if forward_limit == -1:
+                continue
+            backward_limit = BinSearch(fixed_gcd, l, -1)
+            result += forward_limit - backward_limit + 1
         return result
-    
-    # for l in range(n):
-    #     for r in range(l, n):
-    #         gcd_counter[get(l, r)] += 1
 
     return st, get, get_gcd_count
         
@@ -93,6 +84,8 @@ def main():
 
     for q in queries:
         print(get_gdc_count(q))
+        # print(f"gcd={q}: {get_gdc_count(q)} veces")
+
         
 
     
