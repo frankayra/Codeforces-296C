@@ -5,7 +5,8 @@ def SparseTable(array, m, k_shoots):
     n = len(array)
 
     # st = [0] * n
-    LOG_MAX = int(math.log2(n-1)) + 2
+    # LOG_MAX = int(math.log2(n-1)) + 2
+    LOG_MAX = int(math.log2(n)) + 1
     st = [[[0]*m for _ in range(LOG_MAX)] for _ in range(n)]
     for i in range(n):
         for k in range(m):
@@ -83,8 +84,9 @@ def main():
     left_segment = st[l][log]
     right_segment = st[r-2**log+1][log]
     for i in range(m):
-        if left_segment == -1 or right_segment == -1:
-            print(-1)
+        if l == -1 or r == -1:
+            for k in range(m):
+                print(0, end=" " if k != m-1 else "")
             break
         print(max(left_segment[i], right_segment[i]), end=" " if i != m-1 else "")
     
